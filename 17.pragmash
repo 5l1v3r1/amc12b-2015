@@ -1,0 +1,21 @@
+# An unfair coin lands on heads with a probability of 1/4. When tossed n times,
+# the probability of exactly two heads is the same as the probability of exactly
+# three heads. What is the value of n?
+
+for n (range 3 100) {
+  set nchoose2 (/ (* $n (- $n 1)) 2)
+  set eachProb (* (/ 1 16) (pow 0.75 (- $n 2)))
+  set 2prob (* $nchoose2 $eachProb)
+  
+  set nchoose3 (/ (* $n (- $n 1) (- $n 2)) 6)
+  set eachProb (* (/ 1 64) (pow 0.75 (- $n 3)))
+  set 3prob (* $nchoose3 $eachProb)
+  
+  # Account for floating point error
+  set sub2 (substr $2prob 0 4)
+  set sub3 (substr $3prob 0 4)
+  if $sub2 $sub3 {
+    puts After $n tosses 3prob = $3prob and 2prob = $2prob
+    exit 0
+  }
+}
