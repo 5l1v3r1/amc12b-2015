@@ -1,0 +1,30 @@
+# There are 6 chairs in a circle. Everyone stands up and sits down in a
+# different seat that is neither the seat they were just in or the two adjacent
+# seats to their old seat. How many different ways can this be done?
+
+# Yeah, yeah, this is a probabilistic solution because I'm too lazy to generate
+# every permutation intelligently...
+set dests (range 6)
+set count 0
+set seen ""
+set v1 0\n1\n5
+set v2 0\n1\n2
+set v3 1\n2\n3
+set v4 2\n3\n4
+set v5 3\n4\n5
+set v6 0\n4\n5
+while (< (count $seen) 720) {
+	set a (shuffle $dests)
+	set esc (escape $a)
+	if not (contains $seen $esc) {
+		set seen (arr $seen $esc)
+		if "" (contains $v1 ([] $a 0)) (contains $v2 ([] $a 1)) \
+			(contains $v3 ([] $a 2)) (contains $v4 ([] $a 3)) \
+			(contains $v5 ([] $a 4)) (contains $v6 ([] $a 5)) {
+			set count (+ $count 1)
+		}
+		puts Seen (count $seen) got $count
+	}
+}
+set total (count $seen)
+puts There are (* 720 (/ $count $total)) cases.
