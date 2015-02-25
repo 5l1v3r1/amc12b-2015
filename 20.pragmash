@@ -10,26 +10,45 @@
 # Find f(2015, 2)
 
 if "" $ARGV {
-	puts (pragmash 20.pragmash 2015 2)
+  write 20_cache.txt \n
+  puts (pragmash 20.pragmash 2015 2 20_cache.txt)
+  rm 20_cache.txt
+  exit 0
 }
+
 set i ([] $ARGV 0)
 set j ([] $ARGV 1)
-
-puts $i $j
+set cache ([] $ARGV 2)
 
 set res ""
-if "true" (<= $j 4) (= $i 0) {
-	set res (+ $j 1)
-	if $res 5 {
-		set res 0
-	}
+set cacheContents (read $cache)
+set pattern (join \n $i , $j , "([0-9])\n")
+set m (match $pattern $cacheContents)
+
+if $m {
+  set res ([] $m 1)
+} else if "true" (<= $j 4) (= $i 0) {
+  set res (+ $j 1)
+  if $res 5 {
+    set res 0
+  }
 } else if "true" (>= $i 1) (= $j 0) {
-	set res (pragmash 20.pragmash (- $i 1) 1)
+  set res (pragmash 20.pragmash (- $i 1) 1 $cache)
 } else if "true" (>= $i 1) (>= $j 1) (<= $j 4) {
-	set arg1 (- $i 1)
-	set arg2 (pragmash 20.pragmash $i (- $j 1))
-	set res (pragmash 20.pragmash $arg1 $arg2)
+  set arg1 (- $i 1)
+  set arg2 (pragmash 20.pragmash $i (- $j 1) $cache)
+  set res (pragmash 20.pragmash $arg1 $arg2 $cache)
 } else {
-	throw invalid input $i $j
+  throw invalid input $i $j
 }
+
+# update the cache if necessary
+set cacheContents (read $cache)
+set m (match $pattern $cacheContents)
+if not $m {
+  # Add the result to the cache
+  set cacheLine (join $i , $j , $res)
+  write $cache (join $cacheContents $cacheLine \n)
+}
+
 echo $res
