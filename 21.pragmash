@@ -1,0 +1,26 @@
+# Cozy the Cat and Dash the Dog are going up a staircase with a certain number
+# of steps. However, instead of walking up the steps one at a time, both Cozy
+# and Dash jump. Cozy goes two steps up with each jump (though if necessary, he
+# will just jump the last step). Dash goes five steps up with each jump (though
+# if necessary, he will just jump the last steps if there are fewer than 5
+# steps left). Suppose that Dash takes 19 fewer jumps than Cozy to reach the
+# top of the staircase. Let s denote the sum of all possible numbers of steps
+# this staircase can have. What is the sum of the digits of s?
+
+set total 0
+for n (range 1 1000) {
+  set c (ceil (/ $n 2))
+  set d (ceil (/ $n 5))
+  set diff (- $c $d)
+  if $diff 19 {
+    puts Step count could be $n
+    set total (+ $total $n)
+  }
+}
+puts Sum of possibilities is $total
+
+set dig 0
+for x (chars $total) {
+  set dig (+ $dig $x)
+}
+puts Total sum of digits is $dig
